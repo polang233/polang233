@@ -9,6 +9,18 @@
 ![plugins](https://img.shields.io/badge/dynamic/json?url=https%3A%2F%2Fraw.githubusercontent.com%2Fpolang233%2Fpolang233%2Fmain%2Fstats.json&query=%24.plugin_downloads&label=Plugin%20Downloads&color=blue)
 ![servers](https://img.shields.io/badge/dynamic/json?url=https%3A%2F%2Fraw.githubusercontent.com%2Fpolang233%2Fpolang233%2Fmain%2Fstats.json&query=%24.bstats_servers&label=bStats%20Servers&color=success)
 
+<br/>
+
+<a href="https://github.com/lowlighter/metrics">
+  <img src="metrics.svg" alt="GitHub metrics" width="100%">
+</a>
+
+<br/>
+
+<a href="https://ossinsight.io/analyze-user/polang233">
+  <img src="https://ossinsight.io/analyze-user/polang233/opengraph-image" alt="OSSInsight" width="800">
+</a>
+
 </div>
 
 ### 公开项目
