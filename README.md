@@ -1,18 +1,6 @@
-# Polang
-
-一个简单的开发者，同时运营着一个简单的 MC 服务器 · [网站](https://www.sbsj.cc)
-
 <div align="center">
 
-[![ghfind](https://ghfind.com/api/badge/polang233)](https://ghfind.com/zh/u/polang233)
-
-<a href="https://ghfind.com/zh/u/polang233">
-  <picture>
-    <source media="(prefers-color-scheme: dark)" srcset="https://ghfind.com/api/card/polang233?theme=dark">
-    <source media="(prefers-color-scheme: light)" srcset="https://ghfind.com/api/card/polang233?theme=light">
-    <img alt="ghfind card" src="https://ghfind.com/api/card/polang233?theme=light" width="720">
-  </picture>
-</a>
+[![GitHub Roast 评分卡](https://ghfind.com/api/card/mini/polang233?theme=dark&lang=zh)](https://ghfind.com/u/polang233?ref=badge)
 
 <br/>
 
