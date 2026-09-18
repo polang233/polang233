@@ -19,7 +19,7 @@ jobs:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
           python3 <<'PY'
-          import json, os, urllib.request
+          import json, os, re, urllib.request
           from datetime import datetime, timezone
 
           def get_json(url, headers=None):
@@ -27,40 +27,91 @@ jobs:
             with urllib.request.urlopen(req, timeout=60) as r:
               return json.load(r)
 
+          def get_text(url):
+            req = urllib.request.Request(url, headers={"User-Agent": "Mozilla/5.0 (compatible; polang233-profile-stats/1.0)"})
+            with urllib.request.urlopen(req, timeout=60) as r:
+              return r.read().decode("utf-8", "replace")
+
           token = os.environ["GH_TOKEN"]
+          gh_headers = {
+            "User-Agent": "polang233-profile-stats",
+            "Authorization": f"Bearer {token}",
+            "Accept": "application/vnd.github+json",
+          }
+
           repos = get_json(
-              "https://api.github.com/users/polang233/repos?per_page=100&type=owner",
-              {"User-Agent": "polang233-profile-stats", "Authorization": f"Bearer {token}", "Accept": "application/vnd.github+json"},
+            "https://api.github.com/users/polang233/repos?per_page=100&type=owner",
+            gh_headers,
           )
           owned = [r for r in repos if not r.get("fork") and not r.get("private")]
           stars = sum(int(r.get("stargazers_count") or 0) for r in owned)
 
           ovs = 0
           for name in ("cursor-language-pack", "kiro-language-pack"):
-              d = get_json(f"https://open-vsx.org/api/polang233/{name}")
-              ovs += int(d.get("downloadCount") or 0)
+            d = get_json(f"https://open-vsx.org/api/polang233/{name}")
+            ovs += int(d.get("downloadCount") or 0)
 
-          hangar = int(get_json("https://hangar.papermc.io/api/v1/projects/polang/VelocityToolBox")["stats"]["downloads"])
+          breakdown = {"minebbs": {}, "klpbbs": {}, "github_releases": {}, "modrinth": {}}
+
+          minebbs = {
+            "GoodsTrade": "https://www.minebbs.com/resources/goodstrade.15705/",
+            "NoTime": "https://www.minebbs.com/resources/notime-folia.7885/",
+            "VelocityToolbox": "https://www.minebbs.com/resources/velocitytoolbox.18104/",
+          }
+          for name, url in minebbs.items():
+            t = get_text(url)
+            m = re.search(r"<dt>\s*下载\s*</dt>\s*<dd[^>]*>\s*([\d,]+)\s*</dd>", t)
+            breakdown["minebbs"][name] = int(m.group(1).replace(",", "")) if m else 0
+
+          klpbbs = {
+            "NoTime": "https://klpbbs.com/thread-160090-1-1.html",
+            "VelocityToolbox": "https://klpbbs.com/thread-173633-1-1.html",
+          }
+          for name, url in klpbbs.items():
+            t = get_text(url)
+            m = re.search(r"下载次数[:：]?\s*([\d,]+)", t)
+            breakdown["klpbbs"][name] = int(m.group(1).replace(",", "")) if m else 0
+
+          for repo in ("GoodsTrade", "NoTime", "HeadSound", "TracesDeath", "VelocityToolbox"):
+            releases = get_json(f"https://api.github.com/repos/polang233/{repo}/releases", gh_headers)
+            total = 0
+            for rel in releases:
+              for asset in rel.get("assets") or []:
+                total += int(asset.get("download_count") or 0)
+            breakdown["github_releases"][repo] = total
+
+          try:
+            d = get_json("https://api.modrinth.com/v2/project/notime")
+            breakdown["modrinth"]["NoTime"] = int(d.get("downloads") or 0)
+          except Exception:
+            pass
+
+          platform_totals = {p: sum(items.values()) for p, items in breakdown.items()}
+          plugin_downloads = sum(platform_totals.values())
+          max_platform = max(platform_totals, key=platform_totals.get) if platform_totals else ""
 
           bstats = 0
-          breakdown = {}
+          bstats_breakdown = {}
           for pid, name in ((30110, "GoodsTrade"), (19955, "NoTime"), (33451, "VelocityToolbox")):
-              data = get_json(f"https://bstats.org/api/v1/plugins/{pid}/charts/servers/data")
-              v = int(data[-1][1])
-              breakdown[name] = v
-              bstats += v
+            data = get_json(f"https://bstats.org/api/v1/plugins/{pid}/charts/servers/data")
+            v = int(data[-1][1])
+            bstats_breakdown[name] = v
+            bstats += v
 
           stats = {
-              "stars": stars,
-              "openvsx_downloads": ovs,
-              "hangar_downloads": hangar,
-              "bstats_servers": bstats,
-              "bstats_breakdown": breakdown,
-              "updated_at": datetime.now(timezone.utc).strftime("%Y-%m-%dT%H:%M:%SZ"),
+            "stars": stars,
+            "openvsx_downloads": ovs,
+            "plugin_downloads": plugin_downloads,
+            "plugin_downloads_max_platform": max_platform,
+            "plugin_downloads_by_platform": platform_totals,
+            "plugin_downloads_breakdown": breakdown,
+            "bstats_servers": bstats,
+            "bstats_breakdown": bstats_breakdown,
+            "updated_at": datetime.now(timezone.utc).strftime("%Y-%m-%dT%H:%M:%SZ"),
           }
           with open("stats.json", "w", encoding="utf-8") as f:
-              json.dump(stats, f, indent=2, ensure_ascii=False)
-              f.write("\n")
+            json.dump(stats, f, indent=2, ensure_ascii=False)
+            f.write("\n")
           print(json.dumps(stats, indent=2, ensure_ascii=False))
           PY
 
