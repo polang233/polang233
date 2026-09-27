@@ -1,6 +1,6 @@
 {
   "stars": 51,
-  "openvsx_downloads": 14426,
+  "openvsx_downloads": 14708,
   "plugin_downloads": 1194,
   "plugin_downloads_max_platform": "minebbs",
   "plugin_downloads_by_platform": {
@@ -30,11 +30,11 @@
       "NoTime": 14
     }
   },
-  "bstats_servers": 66,
+  "bstats_servers": 70,
   "bstats_breakdown": {
-    "GoodsTrade": 23,
-    "NoTime": 39,
-    "VelocityToolbox": 4
+    "GoodsTrade": 21,
+    "NoTime": 44,
+    "VelocityToolbox": 5
   },
-  "updated_at": "2026-09-26T04:15:33Z"
+  "updated_at": "2026-09-27T04:31:23Z"
 }
