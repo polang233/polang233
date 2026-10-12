@@ -50,7 +50,15 @@
       <a href="https://github.com/polang233/kiro-language-pack"><b>Kiro Language Pack</b></a><br/>
       Kiro IDE 中文语言包
     </td>
-    <td width="33%"></td>
-    <td width="33%"></td>
+    <td width="33%" valign="top">
+      <a href="https://github.com/polang233/TaskEase"><img src="https://raw.githubusercontent.com/polang233/TaskEase/main/Branding/AppIcon-preview.png" width="40" height="40" align="left" alt="TaskEase 轻程"></a>
+      <a href="https://github.com/polang233/TaskEase"><b>TaskEase 轻程</b></a><br/>
+      macOS 菜单栏的进程优先级与 CPU 限制工具
+    </td>
+    <td width="33%" valign="top">
+      <a href="https://github.com/polang233/safari-webrtc-guard"><img src="https://raw.githubusercontent.com/polang233/safari-webrtc-guard/main/assets/branding/logo-128.png" width="40" height="40" align="left" alt="Safari WebRTC Guard"></a>
+      <a href="https://github.com/polang233/safari-webrtc-guard"><b>Safari WebRTC Guard</b></a><br/>
+      防 WebRTC 泄露真实 IP 的 Safari 扩展
+    </td>
   </tr>
 </table>
