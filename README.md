@@ -7,8 +7,6 @@
 
 </div>
 
-<br/>
-
 <table width="100%">
   <tr>
     <td width="33%" valign="top">
@@ -31,12 +29,12 @@
     <td width="33%" valign="top">
       <a href="https://github.com/polang233/TracesDeath"><img src="https://raw.githubusercontent.com/polang233/TracesDeath/main/assets/logo-memorial-64.png" width="40" height="40" align="left" alt="TracesDeath"></a>
       <a href="https://github.com/polang233/TracesDeath"><b>TracesDeath</b></a><br/>
-      轻量遗体与墓碑，原槽位取回物品
+      遗体墓碑与原槽位取回
     </td>
     <td width="33%" valign="top">
       <a href="https://github.com/polang233/VelocityToolbox"><img src="https://raw.githubusercontent.com/polang233/VelocityToolbox/main/assets/logo-256.png" width="40" height="40" align="left" alt="VelocityToolbox"></a>
       <a href="https://github.com/polang233/VelocityToolbox"><b>VelocityToolbox</b></a><br/>
-      Velocity 热管理、资源包下发与版本限制
+      Velocity 热管理与资源包下发
     </td>
     <td width="33%" valign="top">
       <a href="https://github.com/polang233/cursor-language-pack"><img src="https://raw.githubusercontent.com/polang233/cursor-language-pack/main/media/icon.png" width="40" height="40" align="left" alt="Cursor Language Pack"></a>
@@ -53,12 +51,12 @@
     <td width="33%" valign="top">
       <a href="https://github.com/polang233/TaskEase"><img src="https://raw.githubusercontent.com/polang233/TaskEase/main/Branding/AppIcon-preview.png" width="40" height="40" align="left" alt="TaskEase 轻程"></a>
       <a href="https://github.com/polang233/TaskEase"><b>TaskEase 轻程</b></a><br/>
-      macOS 菜单栏的进程优先级与 CPU 限制工具
+      macOS 进程优先级与 CPU 限制
     </td>
     <td width="33%" valign="top">
       <a href="https://github.com/polang233/safari-webrtc-guard"><img src="https://raw.githubusercontent.com/polang233/safari-webrtc-guard/main/assets/branding/logo-128.png" width="40" height="40" align="left" alt="Safari WebRTC Guard"></a>
       <a href="https://github.com/polang233/safari-webrtc-guard"><b>Safari WebRTC Guard</b></a><br/>
-      防 WebRTC 泄露真实 IP 的 Safari 扩展
+      防 WebRTC 泄露真实 IP
     </td>
   </tr>
 </table>
