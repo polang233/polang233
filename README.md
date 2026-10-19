@@ -32,4 +32,11 @@
     <td width="10%" align="center"><a href="https://github.com/polang233/safari-webrtc-guard"><img src="https://raw.githubusercontent.com/polang233/safari-webrtc-guard/main/assets/branding/logo-128.png" width="68" height="68" alt="Safari WebRTC Guard"></a></td>
     <td width="23%"><a href="https://github.com/polang233/safari-webrtc-guard"><b>Safari WebRTC Guard</b></a><br/>防 WebRTC 泄露真实 IP</td>
   </tr>
+  <tr>
+    <td width="10%" align="center"><a href="https://github.com/polang233/dsh-plugin-index"><img src="https://raw.githubusercontent.com/polang233/dsh-plugin-index/main/public/assets/logo-256.png" width="68" height="68" alt="Open Plugin Market"></a></td>
+    <td width="23%"><a href="https://github.com/polang233/dsh-plugin-index"><b>Open Plugin Market</b></a><br/>DSH 社区插件市场</td>
+    <td width="10%" align="center"><a href="https://github.com/polang233/claude-desktop-zh"><img src="https://raw.githubusercontent.com/polang233/claude-desktop-zh/main/assets/logo.png" width="68" height="68" alt="claude-desktop-zh"></a></td>
+    <td width="23%"><a href="https://github.com/polang233/claude-desktop-zh"><b>claude-desktop-zh</b></a><br/>Claude Desktop 加载官方中文界面</td>
+    <td width="10%"></td><td width="23%"></td>
+  </tr>
 </table>
