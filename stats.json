@@ -1,40 +1,50 @@
 {
-  "stars": 71,
-  "openvsx_downloads": 21336,
-  "plugin_downloads": 1259,
+  "stars": 74,
+  "openvsx_downloads": 21532,
+  "plugin_downloads": 1494,
   "plugin_downloads_max_platform": "minebbs",
   "plugin_downloads_by_platform": {
-    "minebbs": 1056,
-    "klpbbs": 30,
-    "github_releases": 126,
-    "modrinth": 47
+    "minebbs": 1069,
+    "klpbbs": 150,
+    "github_releases": 127,
+    "modrinth": 148,
+    "spigot": 0
   },
   "plugin_downloads_breakdown": {
     "minebbs": {
-      "GoodsTrade": 127,
+      "GoodsTrade": 128,
       "NoTime": 921,
-      "VelocityToolbox": 8
+      "VelocityToolbox": 8,
+      "TracesDeath": 12
     },
     "klpbbs": {
-      "NoTime": 30,
-      "VelocityToolbox": 0
+      "NoTime": 150
     },
     "github_releases": {
       "GoodsTrade": 72,
       "NoTime": 25,
       "HeadSound": 0,
       "TracesDeath": 15,
-      "VelocityToolbox": 14
+      "VelocityToolbox": 15
     },
     "modrinth": {
-      "NoTime": 47
+      "NoTime": 47,
+      "GoodsTrade": 72,
+      "VelocityToolbox": 29
+    },
+    "spigot": {
+      "GoodsTrade": 0,
+      "NoTime": 0,
+      "TracesDeath": 0,
+      "VelocityToolbox": 0
     }
   },
-  "bstats_servers": 79,
+  "bstats_servers": 81,
   "bstats_breakdown": {
-    "GoodsTrade": 33,
-    "NoTime": 41,
-    "VelocityToolbox": 5
+    "GoodsTrade": 34,
+    "NoTime": 40,
+    "VelocityToolbox": 5,
+    "TracesDeath": 2
   },
-  "updated_at": "2026-10-19T03:56:18Z"
+  "updated_at": "2026-10-19T14:56:25Z"
 }

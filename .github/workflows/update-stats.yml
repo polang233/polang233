@@ -27,8 +27,11 @@ jobs:
             with urllib.request.urlopen(req, timeout=60) as r:
               return json.load(r)
 
-          def get_text(url):
-            req = urllib.request.Request(url, headers={"User-Agent": "Mozilla/5.0 (compatible; polang233-profile-stats/1.0)"})
+          def get_text(url, user_agent=None):
+            req = urllib.request.Request(
+              url,
+              headers={"User-Agent": user_agent or "Mozilla/5.0 (compatible; polang233-profile-stats/1.0)"},
+            )
             with urllib.request.urlopen(req, timeout=60) as r:
               return r.read().decode("utf-8", "replace")
 
@@ -51,26 +54,29 @@ jobs:
             d = get_json(f"https://open-vsx.org/api/polang233/{name}")
             ovs += int(d.get("downloadCount") or 0)
 
-          breakdown = {"minebbs": {}, "klpbbs": {}, "github_releases": {}, "modrinth": {}}
+          breakdown = {"minebbs": {}, "klpbbs": {}, "github_releases": {}, "modrinth": {}, "spigot": {}}
 
           minebbs = {
             "GoodsTrade": "https://www.minebbs.com/resources/goodstrade.15705/",
             "NoTime": "https://www.minebbs.com/resources/notime-folia.7885/",
             "VelocityToolbox": "https://www.minebbs.com/resources/velocitytoolbox.18104/",
+            "TracesDeath": "https://www.minebbs.com/resources/tracesdeath-mod.18321/",
           }
           for name, url in minebbs.items():
-            t = get_text(url)
-            m = re.search(r"<dt>\s*下载\s*</dt>\s*<dd[^>]*>\s*([\d,]+)\s*</dd>", t)
-            breakdown["minebbs"][name] = int(m.group(1).replace(",", "")) if m else 0
+            try:
+              t = get_text(url)
+              m = re.search(r"<dt>\s*下载\s*</dt>\s*<dd[^>]*>\s*([\d,]+)\s*</dd>", t)
+              breakdown["minebbs"][name] = int(m.group(1).replace(",", "")) if m else 0
+            except Exception:
+              breakdown["minebbs"][name] = 0
 
           klpbbs = {
             "NoTime": "https://klpbbs.com/thread-160090-1-1.html",
-            "VelocityToolbox": "https://klpbbs.com/thread-173633-1-1.html",
           }
           for name, url in klpbbs.items():
             t = get_text(url)
-            m = re.search(r"下载次数[:：]?\s*([\d,]+)", t)
-            breakdown["klpbbs"][name] = int(m.group(1).replace(",", "")) if m else 0
+            counts = [int(x.replace(",", "")) for x in re.findall(r"下载次数[:：]?\s*([\d,]+)", t)]
+            breakdown["klpbbs"][name] = sum(counts)
 
           for repo in ("GoodsTrade", "NoTime", "HeadSound", "TracesDeath", "VelocityToolbox"):
             releases = get_json(f"https://api.github.com/repos/polang233/{repo}/releases", gh_headers)
@@ -80,11 +86,27 @@ jobs:
                 total += int(asset.get("download_count") or 0)
             breakdown["github_releases"][repo] = total
 
-          try:
-            d = get_json("https://api.modrinth.com/v2/project/notime")
-            breakdown["modrinth"]["NoTime"] = int(d.get("downloads") or 0)
-          except Exception:
-            pass
+          for slug, name in (("notime", "NoTime"), ("goodstrade", "GoodsTrade"), ("velocitytoolbox", "VelocityToolbox")):
+            try:
+              d = get_json(f"https://api.modrinth.com/v2/project/{slug}")
+              breakdown["modrinth"][name] = int(d.get("downloads") or 0)
+            except Exception:
+              breakdown["modrinth"][name] = 0
+
+          spigot_ua = "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/131.0.0.0 Safari/537.36"
+          spigot = {
+            "GoodsTrade": "https://www.spigotmc.org/resources/goodstrade.136576/",
+            "NoTime": "https://www.spigotmc.org/resources/notime.136644/",
+            "TracesDeath": "https://www.spigotmc.org/resources/tracesdeath.138981/",
+            "VelocityToolbox": "https://www.spigotmc.org/resources/vtoolbox.139080/",
+          }
+          for name, url in spigot.items():
+            try:
+              t = get_text(url, user_agent=spigot_ua)
+              m = re.search(r"Downloads:\s*</dt>\s*<dd[^>]*>\s*([\d,]+)", t)
+              breakdown["spigot"][name] = int(m.group(1).replace(",", "")) if m else 0
+            except Exception:
+              breakdown["spigot"][name] = 0
 
           platform_totals = {p: sum(items.values()) for p, items in breakdown.items()}
           plugin_downloads = sum(platform_totals.values())
@@ -92,7 +114,7 @@ jobs:
 
           bstats = 0
           bstats_breakdown = {}
-          for pid, name in ((30110, "GoodsTrade"), (19955, "NoTime"), (33451, "VelocityToolbox")):
+          for pid, name in ((30110, "GoodsTrade"), (19955, "NoTime"), (33451, "VelocityToolbox"), (34148, "TracesDeath")):
             data = get_json(f"https://bstats.org/api/v1/plugins/{pid}/charts/servers/data")
             v = int(data[-1][1])
             bstats_breakdown[name] = v
