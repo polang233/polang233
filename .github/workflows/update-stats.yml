@@ -19,7 +19,7 @@ jobs:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
           python3 <<'PY'
-          import json, os, re, urllib.request
+          import json, os, re, urllib.error, urllib.request
           from datetime import datetime, timezone
 
           def get_json(url, headers=None):
@@ -35,24 +35,89 @@ jobs:
             with urllib.request.urlopen(req, timeout=60) as r:
               return r.read().decode("utf-8", "replace")
 
-          token = os.environ["GH_TOKEN"]
+          def fail_reason(exc):
+            if isinstance(exc, urllib.error.HTTPError):
+              return f"HTTP {exc.code}"
+            msg = str(exc).strip()
+            return msg or type(exc).__name__
+
+          def warn_fallback(label, reason, previous):
+            print(f"WARN {label} fetch failed ({reason}), using previous {previous}")
+
+          prev = {}
+          try:
+            with open("stats.json", encoding="utf-8") as f:
+              loaded = json.load(f)
+            if isinstance(loaded, dict):
+              prev = loaded
+          except Exception:
+            prev = {}
+
+          def prev_dl(platform, name):
+            try:
+              return int(prev["plugin_downloads_breakdown"][platform][name])
+            except Exception:
+              return 0
+
+          def prev_bstats(name):
+            try:
+              return int(prev["bstats_breakdown"][name])
+            except Exception:
+              return 0
+
+          def prev_total(key):
+            try:
+              return int(prev[key])
+            except Exception:
+              return 0
+
+          def fetch_download(label, previous, loader):
+            try:
+              value = loader()
+            except Exception as e:
+              warn_fallback(label, fail_reason(e), previous)
+              return previous
+            if value is None:
+              warn_fallback(label, "no match", previous)
+              return previous
+            if value < previous:
+              warn_fallback(label, f"count {value} < previous {previous}", previous)
+              return previous
+            return value
+
+          token = os.environ.get("GH_TOKEN", "")
           gh_headers = {
             "User-Agent": "polang233-profile-stats",
             "Authorization": f"Bearer {token}",
             "Accept": "application/vnd.github+json",
           }
 
-          repos = get_json(
-            "https://api.github.com/users/polang233/repos?per_page=100&type=owner",
-            gh_headers,
-          )
-          owned = [r for r in repos if not r.get("fork") and not r.get("private")]
-          stars = sum(int(r.get("stargazers_count") or 0) for r in owned)
+          try:
+            repos = get_json(
+              "https://api.github.com/users/polang233/repos?per_page=100&type=owner",
+              gh_headers,
+            )
+            if not isinstance(repos, list):
+              raise ValueError("no repo list")
+            owned = [r for r in repos if not r.get("fork") and not r.get("private")]
+            stars = sum(int(r.get("stargazers_count") or 0) for r in owned)
+          except Exception as e:
+            stars = prev_total("stars")
+            warn_fallback("stars", fail_reason(e), stars)
 
-          ovs = 0
+          prev_ovs = prev_total("openvsx_downloads")
+          ovs_values = []
+          ovs_failed = False
           for name in ("cursor-language-pack", "kiro-language-pack"):
-            d = get_json(f"https://open-vsx.org/api/polang233/{name}")
-            ovs += int(d.get("downloadCount") or 0)
+            try:
+              d = get_json(f"https://open-vsx.org/api/polang233/{name}")
+              if not isinstance(d, dict) or d.get("downloadCount") is None:
+                raise ValueError("no downloadCount")
+              ovs_values.append(int(d["downloadCount"]))
+            except Exception as e:
+              ovs_failed = True
+              warn_fallback(f"openvsx/{name}", fail_reason(e), prev_ovs)
+          ovs = prev_ovs if ovs_failed else sum(ovs_values)
 
           breakdown = {"minebbs": {}, "klpbbs": {}, "github_releases": {}, "modrinth": {}, "spigot": {}}
 
@@ -62,36 +127,58 @@ jobs:
             "VelocityToolbox": "https://www.minebbs.com/resources/velocitytoolbox.18104/",
             "TracesDeath": "https://www.minebbs.com/resources/tracesdeath-mod.18321/",
           }
+          minebbs_re = re.compile(r"<dt>\s*下载\s*</dt>\s*<dd[^>]*>\s*([\d,]+)\s*</dd>")
           for name, url in minebbs.items():
-            try:
+            previous = prev_dl("minebbs", name)
+
+            def load(url=url):
               t = get_text(url)
-              m = re.search(r"<dt>\s*下载\s*</dt>\s*<dd[^>]*>\s*([\d,]+)\s*</dd>", t)
-              breakdown["minebbs"][name] = int(m.group(1).replace(",", "")) if m else 0
-            except Exception:
-              breakdown["minebbs"][name] = 0
+              m = minebbs_re.search(t)
+              return int(m.group(1).replace(",", "")) if m else None
+
+            breakdown["minebbs"][name] = fetch_download(f"minebbs/{name}", previous, load)
 
           klpbbs = {
             "NoTime": "https://klpbbs.com/thread-160090-1-1.html",
           }
+          klpbbs_re = re.compile(r"下载次数[:：]?\s*([\d,]+)")
           for name, url in klpbbs.items():
-            t = get_text(url)
-            counts = [int(x.replace(",", "")) for x in re.findall(r"下载次数[:：]?\s*([\d,]+)", t)]
-            breakdown["klpbbs"][name] = sum(counts)
+            previous = prev_dl("klpbbs", name)
+
+            def load(url=url):
+              t = get_text(url)
+              counts = [int(x.replace(",", "")) for x in klpbbs_re.findall(t)]
+              return sum(counts) if counts else None
+
+            breakdown["klpbbs"][name] = fetch_download(f"klpbbs/{name}", previous, load)
 
           for repo in ("GoodsTrade", "NoTime", "HeadSound", "TracesDeath", "VelocityToolbox"):
-            releases = get_json(f"https://api.github.com/repos/polang233/{repo}/releases", gh_headers)
-            total = 0
-            for rel in releases:
-              for asset in rel.get("assets") or []:
-                total += int(asset.get("download_count") or 0)
-            breakdown["github_releases"][repo] = total
+            previous = prev_dl("github_releases", repo)
+
+            def load(repo=repo):
+              releases = get_json(f"https://api.github.com/repos/polang233/{repo}/releases", gh_headers)
+              if not isinstance(releases, list):
+                raise ValueError("no releases")
+              total = 0
+              for rel in releases:
+                if not isinstance(rel, dict):
+                  continue
+                for asset in rel.get("assets") or []:
+                  total += int(asset.get("download_count") or 0)
+              return total
+
+            breakdown["github_releases"][repo] = fetch_download(f"github_releases/{repo}", previous, load)
 
           for slug, name in (("notime", "NoTime"), ("goodstrade", "GoodsTrade"), ("velocitytoolbox", "VelocityToolbox")):
-            try:
+            previous = prev_dl("modrinth", name)
+
+            def load(slug=slug):
               d = get_json(f"https://api.modrinth.com/v2/project/{slug}")
-              breakdown["modrinth"][name] = int(d.get("downloads") or 0)
-            except Exception:
-              breakdown["modrinth"][name] = 0
+              if not isinstance(d, dict) or d.get("downloads") is None:
+                return None
+              return int(d["downloads"])
+
+            breakdown["modrinth"][name] = fetch_download(f"modrinth/{name}", previous, load)
 
           spigot_ua = "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/131.0.0.0 Safari/537.36"
           spigot = {
@@ -100,13 +187,16 @@ jobs:
             "TracesDeath": "https://www.spigotmc.org/resources/tracesdeath.138981/",
             "VelocityToolbox": "https://www.spigotmc.org/resources/vtoolbox.139080/",
           }
+          spigot_re = re.compile(r"Downloads:\s*</dt>\s*<dd[^>]*>\s*([\d,]+)")
           for name, url in spigot.items():
-            try:
+            previous = prev_dl("spigot", name)
+
+            def load(url=url):
               t = get_text(url, user_agent=spigot_ua)
-              m = re.search(r"Downloads:\s*</dt>\s*<dd[^>]*>\s*([\d,]+)", t)
-              breakdown["spigot"][name] = int(m.group(1).replace(",", "")) if m else 0
-            except Exception:
-              breakdown["spigot"][name] = 0
+              m = spigot_re.search(t)
+              return int(m.group(1).replace(",", "")) if m else None
+
+            breakdown["spigot"][name] = fetch_download(f"spigot/{name}", previous, load)
 
           platform_totals = {p: sum(items.values()) for p, items in breakdown.items()}
           plugin_downloads = sum(platform_totals.values())
@@ -115,8 +205,15 @@ jobs:
           bstats = 0
           bstats_breakdown = {}
           for pid, name in ((30110, "GoodsTrade"), (19955, "NoTime"), (33451, "VelocityToolbox"), (34148, "TracesDeath")):
-            data = get_json(f"https://bstats.org/api/v1/plugins/{pid}/charts/servers/data")
-            v = int(data[-1][1])
+            previous = prev_bstats(name)
+            try:
+              data = get_json(f"https://bstats.org/api/v1/plugins/{pid}/charts/servers/data")
+              if not isinstance(data, list) or not data:
+                raise ValueError("no data")
+              v = int(data[-1][1])
+            except Exception as e:
+              warn_fallback(f"bstats/{name}", fail_reason(e), previous)
+              v = previous
             bstats_breakdown[name] = v
             bstats += v
 
