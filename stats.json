@@ -1,14 +1,14 @@
 {
-  "stars": 101,
-  "openvsx_downloads": 23966,
-  "plugin_downloads": 1691,
+  "stars": 112,
+  "openvsx_downloads": 24788,
+  "plugin_downloads": 1697,
   "plugin_downloads_max_platform": "minebbs",
   "plugin_downloads_by_platform": {
     "minebbs": 1069,
     "klpbbs": 152,
     "github_releases": 128,
-    "modrinth": 174,
-    "spigot": 168
+    "modrinth": 178,
+    "spigot": 170
   },
   "plugin_downloads_breakdown": {
     "minebbs": {
@@ -29,11 +29,11 @@
     },
     "modrinth": {
       "NoTime": 53,
-      "GoodsTrade": 82,
+      "GoodsTrade": 86,
       "VelocityToolbox": 39
     },
     "spigot": {
-      "GoodsTrade": 80,
+      "GoodsTrade": 82,
       "NoTime": 51,
       "TracesDeath": 25,
       "VelocityToolbox": 12
@@ -41,10 +41,10 @@
   },
   "bstats_servers": 79,
   "bstats_breakdown": {
-    "GoodsTrade": 33,
+    "GoodsTrade": 32,
     "NoTime": 39,
     "VelocityToolbox": 6,
-    "TracesDeath": 1
+    "TracesDeath": 2
   },
-  "updated_at": "2026-10-22T03:57:50Z"
+  "updated_at": "2026-10-23T04:00:45Z"
 }
