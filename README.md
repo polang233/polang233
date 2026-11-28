@@ -2,7 +2,7 @@
 
 ![stars](https://img.shields.io/badge/dynamic/json?url=https%3A%2F%2Fraw.githubusercontent.com%2Fpolang233%2Fpolang233%2Fmain%2Fstats.json&query=%24.stars&label=GitHub%20Stars&color=yellow)
 ![openvsx](https://img.shields.io/badge/dynamic/json?url=https%3A%2F%2Fraw.githubusercontent.com%2Fpolang233%2Fpolang233%2Fmain%2Fstats.json&query=%24.openvsx_downloads&label=OpenVSX%20Downloads&color=purple)
-![plugins](https://img.shields.io/badge/dynamic/json?url=https%3A%2F%2Fraw.githubusercontent.com%2Fpolang233%2Fpolang233%2Fmain%2Fstats.json&query=%24.plugin_downloads&label=plugins%20下载量&color=blue)
+![plugins](https://img.shields.io/badge/dynamic/json?url=https%3A%2F%2Fraw.githubusercontent.com%2Fpolang233%2Fpolang233%2Fmain%2Fstats.json&query=%24.plugin_downloads&label=Plugin%20Downloads&color=blue)
 ![servers](https://img.shields.io/badge/dynamic/json?url=https%3A%2F%2Fraw.githubusercontent.com%2Fpolang233%2Fpolang233%2Fmain%2Fstats.json&query=%24.bstats_servers&label=Running%20servers&color=success)
 
 </div>
@@ -35,9 +35,17 @@
   <tr>
     <td width="10%" align="center"><a href="https://github.com/polang233/dsh-plugin-index"><img src="https://raw.githubusercontent.com/polang233/dsh-plugin-index/main/public/assets/logo-256.png" width="68" height="68" alt="Open Plugin Market"></a></td>
     <td width="23%"><a href="https://github.com/polang233/dsh-plugin-index"><b>Open Plugin Market</b></a><br/>DSH 社区插件市场</td>
-    <td width="10%" align="center"><a href="https://github.com/polang233/claude-desktop-zh"><img src="https://raw.githubusercontent.com/polang233/claude-desktop-zh/main/assets/logo.png" width="68" height="68" alt="claude-desktop-zh"></a></td>
-    <td width="23%"><a href="https://github.com/polang233/claude-desktop-zh"><b>claude-desktop-zh</b></a><br/>Claude Desktop 加载官方中文界面</td>
+    <td width="10%" align="center"><a href="https://github.com/polang233/claude-desktop-zh"><img src="https://raw.githubusercontent.com/polang233/claude-desktop-zh/main/assets/logo.png" width="68" height="68" alt="Claude Desktop 中文"></a></td>
+    <td width="23%"><a href="https://github.com/polang233/claude-desktop-zh"><b>Claude Desktop 中文</b></a><br/>Claude Desktop 加载官方中文界面</td>
     <td width="10%" align="center"><a href="https://github.com/polang233/pixel-atlas"><img src="https://raw.githubusercontent.com/polang233/pixel-atlas/main/public/logo.svg" width="68" height="68" alt="像素星图 Pixel Atlas"></a></td>
-    <td width="23%"><a href="https://github.com/polang233/pixel-atlas"><b>像素星图 Pixel Atlas</b></a><br/>汇集百万级像素素材，当前提供 140 万张 16×16 像素图，支持地图式浏览。</td>
+    <td width="23%"><a href="https://github.com/polang233/pixel-atlas"><b>像素星图 Pixel Atlas</b></a><br/>当前 140 万张 16×16 像素图，支持地图式浏览</td>
+  </tr>
+  <tr>
+    <td width="10%" align="center"><a href="https://github.com/polang233/pigeon"><img src="https://raw.githubusercontent.com/polang233/pigeon/main/assets/brand/pigeon-app-icon-rounded.png" width="68" height="68" alt="Pigeon（信鸽）"></a></td>
+    <td width="23%"><a href="https://github.com/polang233/pigeon"><b>Pigeon（信鸽）</b></a><br/>让 AI agent 互相派活、传话，支持跨工具与跨电脑</td>
+    <td width="10%" align="center"><a href="https://github.com/polang233/antigravity-zh"><img src="https://raw.githubusercontent.com/polang233/polang233/main/media/antigravity-zh.png" width="68" height="68" alt="Antigravity 中文"></a></td>
+    <td width="23%"><a href="https://github.com/polang233/antigravity-zh"><b>Antigravity 中文</b></a><br/>喜鹊插件，检查、应用和还原 Antigravity 社区汉化</td>
+    <td width="10%"></td>
+    <td width="23%"></td>
   </tr>
 </table>
